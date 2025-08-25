@@ -17,6 +17,4 @@ type UserServiceInterface interface {
 	GetUserInfo(id uint) (response.UserVO, error)
 
 	UpdateHeartbeatTime(userId int64, time int64) error
-
-	CheckOfflineUsers() error
 }

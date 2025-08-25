@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"go-chat/internal/db"
-	interfacehandler "go-chat/internal/interfaces/handler"
 	interfacerepository "go-chat/internal/interfaces/repository"
 	"go-chat/internal/model"
 	request "go-chat/internal/model/request"
@@ -19,7 +18,6 @@ import (
 
 type UserService struct {
 	userRepository interfacerepository.UserRepositoryInterface
-	wsHandler      interfacehandler.WsHandlerInterface
 }
 
 var (
@@ -27,10 +25,9 @@ var (
 	once                sync.Once
 )
 
-func InitUserService(wsHandler interfacehandler.WsHandlerInterface, userRepository interfacerepository.UserRepositoryInterface) *UserService {
+func InitUserService(userRepository interfacerepository.UserRepositoryInterface) *UserService {
 	once.Do(func() {
 		UserServiceInstance = &UserService{
-			wsHandler:      wsHandler,
 			userRepository: userRepository,
 		}
 	})
@@ -102,12 +99,6 @@ func (u *UserService) Login(username, password *string) (token string, err error
 		if err != nil {
 			return "", err
 		}
-		onlineStatusNotice := model.OnlineStatusNotice{
-			UserId:       user.ID,
-			OnlineStatus: model.Online,
-			ActionType:   model.LoginAction,
-		}
-		go u.wsHandler.OnlineStatusNotice(int64(user.ID), onlineStatusNotice)
 	}
 	return token, nil
 }
@@ -117,11 +108,6 @@ func (u *UserService) Logout(id uint) {
 	updates := make(map[string]interface{})
 	updates["logout_time"] = time.Now().Unix()
 	_ = u.userRepository.UpdateFields(id, updates)
-	u.wsHandler.OnlineStatusNotice(int64(id), model.OnlineStatusNotice{
-		UserId:       id,
-		OnlineStatus: model.Offline,
-		ActionType:   model.LogoutAction,
-	})
 }
 
 func (u *UserService) OnlineStatusChange(id uint, onlineStatus model.OnlineStatus) error {
@@ -131,11 +117,6 @@ func (u *UserService) OnlineStatusChange(id uint, onlineStatus model.OnlineStatu
 	if err != nil {
 		return err
 	}
-	go u.wsHandler.OnlineStatusNotice(int64(id), model.OnlineStatusNotice{
-		UserId:       id,
-		OnlineStatus: onlineStatus,
-		ActionType:   model.StatusChangeAction,
-	})
 	return nil
 }
 
@@ -187,35 +168,4 @@ func (u *UserService) GetUserInfo(id uint) (response.UserVO, error) {
 
 func (u *UserService) UpdateHeartbeatTime(userId int64, time int64) error {
 	return u.userRepository.UpdateHeartbeatTime(userId, time)
-}
-func (u *UserService) CheckOfflineUsers() error {
-	//todo 可以抽离为配置
-	timeout := 30 * time.Second
-	cutoffTime := time.Now().Add(-timeout).Unix()
-
-	users, err := u.userRepository.GetUsersWithHeartbeatBefore(cutoffTime)
-	if err != nil {
-		return fmt.Errorf("查询心跳超时用户失败: %w", err)
-	}
-
-	for _, user := range users {
-		if user.OnlineStatus == model.Online {
-
-			updates := map[string]interface{}{
-				"online_status": model.Offline,
-			}
-			if err := u.userRepository.UpdateFields(user.ID, updates); err != nil {
-				continue
-			}
-
-			u.wsHandler.OnlineStatusNotice(int64(user.ID), model.OnlineStatusNotice{
-				UserId:       user.ID,
-				OnlineStatus: model.Offline,
-				ActionType:   model.HeartbeatAction,
-			})
-			logUtil.Infof("用户(%d)心跳检测不通过,已主动下线", user.ID)
-		}
-	}
-
-	return nil
 }

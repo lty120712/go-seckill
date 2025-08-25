@@ -40,10 +40,10 @@ rabbitmq:
   password: lty0712
 
 mq:
-  - exchange: chat-exchange
-    queue: chat-storage-queue
-    routingKey: chat-storage
-    handler: HandleChat
+  - exchange: order-exchange
+    queue: order-storage-queue
+    routingKey: order-storage
+    handler: HandleOrder
 
 #Minio
 minio:

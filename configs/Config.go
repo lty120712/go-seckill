@@ -70,22 +70,18 @@ type MinioConfig struct {
 	Bucket    string `yaml:"bucket"`
 	BaseUrl   string `yaml:"baseUrl"`
 }
-type WebSocketConfig struct {
-	Addr string `yaml:"addr"`
-}
 
 // Config 配置结构体 整个文件
 type Config struct {
-	Server    ServerConfig    `yaml:"server"`
-	Database  DatabaseConfig  `yaml:"database"`
-	Api       ApiConfig       `yaml:"api"`
-	Jwt       JWTConfig       `yaml:"jwt"`
-	Redis     RedisConfig     `yaml:"redis"`
-	Rate      RateConfig      `yaml:"rate"`
-	Rabbitmq  RabbitmqConfig  `yaml:"rabbitmq"`
-	Mq        []MqConfig      `yaml:"mq"`
-	Minio     MinioConfig     `yaml:"minio"`
-	WebSocket WebSocketConfig `yaml:"websocket"`
+	Server   ServerConfig   `yaml:"server"`
+	Database DatabaseConfig `yaml:"database"`
+	Api      ApiConfig      `yaml:"api"`
+	Jwt      JWTConfig      `yaml:"jwt"`
+	Redis    RedisConfig    `yaml:"redis"`
+	Rate     RateConfig     `yaml:"rate"`
+	Rabbitmq RabbitmqConfig `yaml:"rabbitmq"`
+	Mq       []MqConfig     `yaml:"mq"`
+	Minio    MinioConfig    `yaml:"minio"`
 }
 
 var AppConfig *Config

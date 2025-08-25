@@ -36,8 +36,6 @@ func Start() {
 	manager.InitMinIO()
 	//配置rabbitmq
 	manager.InitRabbitMQ()
-	//配置WebSocket
-	manager.InitWebSocket()
 	//配置定时任务
 	timer.InitTimer()
 	// 配置 CORS

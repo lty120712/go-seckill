@@ -1,0 +1,1548 @@
+basePath: /api/v1
+definitions:
+  model.ContentType:
+    enum:
+    - text
+    - emoji
+    - image
+    - link
+    type: string
+    x-enum-comments:
+      Emoji: 表情
+      Image: 图片
+      Link: 链接
+      Text: 文本
+    x-enum-descriptions:
+    - 文本
+    - 表情
+    - 图片
+    - 链接
+    x-enum-varnames:
+    - Text
+    - Emoji
+    - Image
+    - Link
+  model.FriendGroupCreateRequest:
+    properties:
+      friend_id_list:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  model.FriendGroupUpdateRequest:
+    properties:
+      friend_id_list:
+        description: 替换好友列表，允许空数组
+        items:
+          type: integer
+        type: array
+      group_id:
+        type: integer
+      name:
+        description: 可选，修改分组名称
+        type: string
+    required:
+    - group_id
+    type: object
+  model.FriendHandlerReq:
+    properties:
+      id:
+        description: 记录id
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/model.Status'
+        description: 状态
+    type: object
+  model.FriendRequestVo:
+    properties:
+      avatar:
+        description: 对方头像
+        type: string
+      id:
+        description: 申请Id
+        type: integer
+      nick_name:
+        description: 对方昵称
+        type: string
+      sent:
+        description: 是否由自己发出 1 是 0否
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/model.Status'
+        description: 申请状态
+      target_id:
+        description: 对方的Id
+        type: integer
+      time:
+        description: 申请时间
+        type: string
+    type: object
+  model.FriendVo:
+    properties:
+      desc:
+        description: 简介
+        type: string
+      device_info:
+        description: 客户端设备信息
+        type: string
+      nickname:
+        description: 昵称
+        type: string
+      online_status:
+        allOf:
+        - $ref: '#/definitions/model.OnlineStatus'
+        description: 用户在线状态（如在线、离线、忙碌等）
+      user_id:
+        description: 用户ID
+        type: integer
+    type: object
+  model.GroupAnnouncementCreateRequest:
+    properties:
+      content:
+        type: string
+      publisher:
+        type: integer
+    type: object
+  model.GroupAnnouncementUpdateRequest:
+    properties:
+      announcement_id:
+        description: 公告ID
+        type: integer
+      content:
+        description: 公告内容
+        type: string
+    type: object
+  model.GroupCreateRequest:
+    properties:
+      max_num:
+        description: 群最大人数
+        maximum: 2000
+        minimum: 1
+        type: integer
+      member_list:
+        description: 初始群成员
+        items:
+          type: integer
+        type: array
+      name:
+        description: 群名称
+        maxLength: 50
+        type: string
+      user_id:
+        description: 创建者ID
+        type: integer
+    required:
+    - name
+    - user_id
+    type: object
+  model.GroupMemberMuteRequest:
+    properties:
+      duration:
+        description: 禁言时长（秒）
+        type: integer
+      member_id:
+        description: 要禁言的成员ID
+        type: integer
+    required:
+    - duration
+    - member_id
+    type: object
+  model.GroupMuteRequest:
+    properties:
+      group_id:
+        type: integer
+      mute_end:
+        type: integer
+    required:
+    - group_id
+    - mute_end
+    type: object
+  model.GroupSearchRequest:
+    properties:
+      code:
+        description: 群号，精准查询
+        type: string
+      name:
+        description: 群名称，模糊查询
+        type: string
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      user_id:
+        description: 用户ID(我加入的群)
+        type: integer
+    type: object
+  model.GroupTransferRequest:
+    properties:
+      group_id:
+        description: 群ID
+        type: integer
+      new_owner_id:
+        description: 新群主的用户ID
+        type: integer
+    required:
+    - group_id
+    - new_owner_id
+    type: object
+  model.GroupUpdateRequest:
+    properties:
+      avatar:
+        type: string
+      desc:
+        type: string
+      group_id:
+        type: integer
+      max_num:
+        type: integer
+      name:
+        type: string
+    required:
+    - group_id
+    type: object
+  model.GroupVo:
+    properties:
+      friend_vo_list:
+        items:
+          $ref: '#/definitions/model.FriendVo'
+        type: array
+      group_id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.KickMemberRequest:
+    properties:
+      member_id:
+        description: 被踢的成员ID
+        type: integer
+    required:
+    - member_id
+    type: object
+  model.LoginRequest:
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.MemberVo:
+    properties:
+      avatar:
+        type: string
+      group_id:
+        type: integer
+      mute_end:
+        type: string
+      nickname:
+        type: string
+      online_status:
+        $ref: '#/definitions/model.OnlineStatus'
+      role:
+        $ref: '#/definitions/model.Role'
+      user_id:
+        type: integer
+    type: object
+  model.MessagePart:
+    properties:
+      content:
+        description: 内容（如文本、图片 URL、链接等）
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/model.ContentType'
+        description: 内容类型（text, emoji, image, link）
+    type: object
+  model.MessageType:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    type: integer
+    x-enum-comments:
+      ForwardedCotent: 转发
+      ImageContent: 图片
+      RedBagContent: 红包
+      SystemContent: 系统消息
+      TextContent: 聊天消息
+      VoiceContent: 语音
+    x-enum-descriptions:
+    - 聊天消息
+    - 图片
+    - 语音
+    - 红包
+    - 转发
+    - 系统消息
+    x-enum-varnames:
+    - TextContent
+    - ImageContent
+    - VoiceContent
+    - RedBagContent
+    - ForwardedCotent
+    - SystemContent
+  model.MessageVo:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/model.MessagePart'
+        type: array
+      createdAt:
+        type: string
+      extra_data:
+        description: 扩展字段（如红包、投票等结构）
+      groupId:
+        format: int64
+        type: integer
+      id:
+        type: integer
+      isRead:
+        type: boolean
+      readerIdList:
+        items:
+          type: integer
+        type: array
+      receiverId:
+        format: int64
+        type: integer
+      reply:
+        allOf:
+        - $ref: '#/definitions/model.MessageVo'
+        description: 额外信息
+      replyId:
+        format: int64
+        type: integer
+      senderAvatar:
+        type: string
+      senderId:
+        format: int64
+        type: integer
+      senderNickName:
+        type: string
+      senderOnlineStatus:
+        $ref: '#/definitions/model.OnlineStatus'
+      status:
+        $ref: '#/definitions/model.Status'
+      targetType:
+        $ref: '#/definitions/model.TargetType'
+      type:
+        $ref: '#/definitions/model.MessageType'
+      updatedAt:
+        type: string
+    type: object
+  model.OnlineStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-comments:
+      Away: 3 离开
+      Busy: 2 忙碌
+      Offline: 0 离线
+      Online: 1 在线
+    x-enum-descriptions:
+    - 0 离线
+    - 1 在线
+    - 2 忙碌
+    - 3 离开
+    x-enum-varnames:
+    - Offline
+    - Online
+    - Busy
+    - Away
+  model.QueryMessagesRequest:
+    properties:
+      cursor:
+        description: 游标 上次查询的最小id 默认为0
+        type: integer
+      end_time:
+        description: 结束时间
+        type: string
+      keyword:
+        description: 模糊搜索
+        type: string
+      limit:
+        description: 限制数量
+        type: integer
+      message_types:
+        description: 以下为拓展,暂时不会做
+        items:
+          $ref: '#/definitions/model.MessageType'
+        type: array
+      start_time:
+        description: 起始时间
+        type: string
+      target_id:
+        description: 目标ID 好友id或群组id
+        type: integer
+      target_type:
+        allOf:
+        - $ref: '#/definitions/model.TargetType'
+        description: 目标类型 私聊或群聊
+    required:
+    - target_id
+    - target_type
+    type: object
+  model.QueryMessagesResponse:
+    properties:
+      cursor:
+        description: 下一页游标（最小 id）
+        type: integer
+      has_more:
+        description: 是否还有更多数据
+        type: boolean
+      list:
+        description: 消息列表
+        items:
+          $ref: '#/definitions/model.MessageVo'
+        type: array
+    type: object
+  model.ReadMessageReq:
+    properties:
+      message_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  model.Response:
+    description: 通用响应格式，用于包装所有 API 响应
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        description: 数据部分
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  model.Role:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      Admin: 1 管理员
+      Member: 0 成员
+      Owner: 2 群主
+    x-enum-descriptions:
+    - 0 成员
+    - 1 管理员
+    - 2 群主
+    x-enum-varnames:
+    - Member
+    - Admin
+    - Owner
+  model.SetAdminRequest:
+    properties:
+      member_id:
+        type: integer
+    required:
+    - member_id
+    type: object
+  model.Status:
+    enum:
+    - 0
+    - 1
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      Accept: 1 接受
+      Disable: 0 禁用
+      Enable: 1 启用
+      Reject: 2 拒绝
+      Todo: 0 待处理
+    x-enum-descriptions:
+    - 0 禁用
+    - 1 启用
+    - 0 待处理
+    - 1 接受
+    - 2 拒绝
+    x-enum-varnames:
+    - Disable
+    - Enable
+    - Todo
+    - Accept
+    - Reject
+  model.TargetType:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-comments:
+      GroupTarget: 群聊
+      PrivateTarget: 私聊
+    x-enum-descriptions:
+    - 私聊
+    - 群聊
+    x-enum-varnames:
+    - PrivateTarget
+    - GroupTarget
+  model.UnmuteMemberRequest:
+    properties:
+      member_id:
+        type: integer
+    required:
+    - member_id
+    type: object
+  model.UnsetAdminRequest:
+    properties:
+      member_id:
+        description: 被取消管理员权限的用户 ID
+        type: integer
+    required:
+    - member_id
+    type: object
+  model.UserUpdateRequest:
+    properties:
+      avatar:
+        type: string
+      desc:
+        maxLength: 500
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      nickname:
+        maxLength: 60
+        type: string
+      phone:
+        type: string
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /friend/add:
+    post:
+      consumes:
+      - application/json
+      description: 当前用户向其他用户发送好友申请
+      parameters:
+      - description: 好友用户ID数组
+        in: body
+        name: data
+        required: true
+        schema:
+          items:
+            type: integer
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 添加好友申请
+      tags:
+      - Friend
+  /friend/group_create:
+    post:
+      consumes:
+      - application/json
+      description: 给好友添加分组标签
+      parameters:
+      - description: 分组创建请求
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.FriendGroupCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 创建好友分组
+      tags:
+      - Friend
+  /friend/group_delete:
+    get:
+      description: 根据分组 ID 删除好友分组
+      parameters:
+      - description: 分组ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 删除好友分组
+      tags:
+      - Friend
+  /friend/group_list:
+    get:
+      description: 返回当前用户的分组及其成员情况
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.GroupVo'
+                  type: array
+              type: object
+      summary: 查询当前用户的所有好友分组
+      tags:
+      - Friend
+  /friend/group_update:
+    post:
+      consumes:
+      - application/json
+      description: 修改分组的名称等信息
+      parameters:
+      - description: 分组更新请求
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.FriendGroupUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 修改好友分组信息
+      tags:
+      - Friend
+  /friend/handle_req:
+    post:
+      consumes:
+      - application/json
+      description: 同意或拒绝某条好友请求
+      parameters:
+      - description: 处理请求信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.FriendHandlerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 同意或拒绝好友申请
+      tags:
+      - Friend
+  /friend/list_req:
+    get:
+      description: 获取当前用户收到的所有好友申请
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.FriendRequestVo'
+                  type: array
+              type: object
+      summary: 获取好友申请列表
+      tags:
+      - Friend
+  /friend/remove:
+    post:
+      consumes:
+      - application/json
+      description: 删除当前用户的好友
+      parameters:
+      - description: 好友ID数组
+        in: body
+        name: data
+        required: true
+        schema:
+          items:
+            type: integer
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 删除好友
+      tags:
+      - Friend
+  /group/{group_id}/announcement:
+    get:
+      description: 获取指定群组的公告内容
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 查询群组公告
+      tags:
+      - Group
+  /group/{group_id}/announcement/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的群组公告
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 公告内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupAnnouncementCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 创建群组公告
+      tags:
+      - Group
+  /group/{group_id}/announcement/delete:
+    get:
+      consumes:
+      - application/json
+      description: 删除指定群组的公告
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 公告ID
+        in: query
+        name: announcement_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 删除群组公告
+      tags:
+      - Group
+  /group/{group_id}/announcement/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新指定的群组公告
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 公告更新内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupAnnouncementUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 更新群组公告
+      tags:
+      - Group
+  /group/{group_id}/announcement_list:
+    get:
+      description: 获取指定群组的所有公告
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 获取群组公告列表
+      tags:
+      - Group
+  /group/{group_id}/dissolve:
+    post:
+      consumes:
+      - application/json
+      description: 解散指定的群组，群主或管理员可以执行此操作
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组解散成功"  // 群组解散成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 解散群组
+      tags:
+      - Group
+  /group/{group_id}/kick_member:
+    post:
+      consumes:
+      - application/json
+      description: 从群组中踢出指定成员
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 踢出成员请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.KickMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成员成功被踢出"  // 成员踢出成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 踢出群成员
+      tags:
+      - Group
+  /group/{group_id}/mute:
+    post:
+      consumes:
+      - application/json
+      description: 将指定成员禁言指定时间
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 禁言请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupMemberMuteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成员禁言成功"  // 禁言成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 禁言群成员
+      tags:
+      - Group
+  /group/{group_id}/set_admin:
+    post:
+      consumes:
+      - application/json
+      description: 设置指定成员为群组管理员
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 设置管理员请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.SetAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 管理员设置成功"  // 管理员设置成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 设置群组管理员
+      tags:
+      - Group
+  /group/{group_id}/transfer:
+    post:
+      consumes:
+      - application/json
+      description: 将群组所有权转让给其他成员
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 转让请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupTransferRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组所有权转让成功"  // 转让成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 转让群组所有权
+      tags:
+      - Group
+  /group/{group_id}/unmute:
+    post:
+      consumes:
+      - application/json
+      description: 解除指定成员的禁言
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 解除禁言请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.UnmuteMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成员解除禁言成功"  // 解除禁言成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 解除禁言
+      tags:
+      - Group
+  /group/{group_id}/unset_admin:
+    post:
+      consumes:
+      - application/json
+      description: 取消指定成员的群组管理员身份
+      parameters:
+      - description: 群组ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: 取消管理员请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.UnsetAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 管理员取消成功"  // 管理员取消成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 取消群组管理员
+      tags:
+      - Group
+  /group/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的群组，并将指定的成员添加到群组中
+      parameters:
+      - description: 创建群组请求参数
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组创建成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 创建群组
+      tags:
+      - Group
+  /group/join:
+    get:
+      consumes:
+      - application/json
+      description: 加入群组
+      parameters:
+      - description: 群组ID
+        in: query
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 加入群组
+      tags:
+      - Group
+  /group/member:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定群组的所有成员
+      parameters:
+      - description: 群组ID
+        in: query
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组成员列表"  // 返回群组成员列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.MemberVo'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 获取群组成员
+      tags:
+      - Group
+  /group/mute:
+    post:
+      consumes:
+      - application/json
+      description: 将群组成员禁言指定时间
+      parameters:
+      - description: 群组禁言请求数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupMuteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组禁言成功"  // 群组禁言成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 群组禁言
+      tags:
+      - Group
+  /group/quit:
+    get:
+      consumes:
+      - application/json
+      description: 退出群组
+      parameters:
+      - description: 群组ID
+        in: query
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 退出群组
+      tags:
+      - Group
+  /group/search:
+    post:
+      consumes:
+      - application/json
+      description: 搜索群组并返回搜索结果
+      parameters:
+      - description: 搜索群组请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupSearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组搜索结果"  // 返回搜索到的群组列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.GroupVo'
+                  type: array
+              type: object
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 搜索群组
+      tags:
+      - Group
+  /group/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新群组的名称、描述等信息
+      parameters:
+      - description: 更新群组信息
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 群组更新成功"  // 更新成功响应
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 内部服务器错误"  // 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 更新群组信息
+      tags:
+      - Group
+  /message/{id}/revoke:
+    get:
+      consumes:
+      - application/json
+      description: 根据消息ID撤回指定消息，只有发送者或管理员才能撤回消息
+      parameters:
+      - description: 消息ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功"  // 成功的撤回响应
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 撤回失败"  // 撤回消息失败
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 撤回消息
+      tags:
+      - Message
+  /message/query:
+    post:
+      consumes:
+      - application/json
+      description: 根据目标ID和目标类型查询聊天消息历史，支持分页、时间范围等过滤
+      parameters:
+      - description: 查询参数
+        in: body
+        name: query
+        required: true
+        schema:
+          $ref: '#/definitions/model.QueryMessagesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功，返回消息列表及分页信息
+          schema:
+            $ref: '#/definitions/model.QueryMessagesResponse'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 查询历史消息（分页，支持游标分页）
+      tags:
+      - Message
+  /message/read:
+    post:
+      consumes:
+      - application/json
+      description: 对该条消息已读
+      parameters:
+      - description: 消息内容
+        in: body
+        name: msg
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReadMessageReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 发送消息失败
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 已读消息
+      tags:
+      - Message
+  /user/info:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前登录用户的信息
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功"  // 返回当前用户的信息
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 获取用户信息失败"  // 获取用户信息失败
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 获取用户信息
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录，返回用户的认证信息
+      parameters:
+      - description: 登录信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "401":
+          description: 登陆失败
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 用户登录
+      tags:
+      - user
+  /user/logout:
+    get:
+      consumes:
+      - application/json
+      description: 用户登出，清除认证信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功"  // 成功的登出响应
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 登出失败"  // 登出失败
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 用户登出
+      tags:
+      - user
+  /user/online_status_change:
+    get:
+      consumes:
+      - application/json
+      description: 修改用户的在线状态（例如：在线、离线、忙碌等）
+      parameters:
+      - description: 在线状态
+        in: query
+        name: online_status
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功"  // 在线状态修改成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误"  // 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: 在线状态变更失败"  // 状态变更失败
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 用户在线状态变更
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: 接口用于用户注册，提供注册所需的字段
+      parameters:
+      - description: 用户名
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 用户注册
+      tags:
+      - user
+  /user/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新用户的个人资料，如昵称、头像等
+      parameters:
+      - description: 用户信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功"  // 更新成功的响应
+          schema:
+            type: string
+        "400":
+          description: 请求参数错误"  // 请求参数错误
+          schema:
+            type: string
+        "401":
+          description: 未授权"  // 未授权，必须登录后更新
+          schema:
+            type: string
+        "500":
+          description: 更新失败"  // 更新失败
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: 更新用户信息
+      tags:
+      - user
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+database:
+  username: root
+  password: lty120712
+  host: localhost
+  port: 3306
+  dbname: go-chat
+
+redis:
+  host: localhost    # Redis 主机地址
+  port: 6379           # Redis 端口，默认是 6379
+  password: 123456        # Redis 密码，如果没有密码可以留空
+  db: 0                # Redis 数据库索引，默认是 0
+  poolSize: 10        # 连接池大小（默认是 10）
+  minIdleConns: 5    # 最小空闲连接数
+  dialTimeout: 10s    # 连接超时
+  readTimeout: 3s     # 读取超时
+  writeTimeout: 3s    # 写入超时
+websocket:
+  addr: ":80"
+api:
+  prefix: /api/v1
+
+jwt:
+  secretKey: go-chat     # JWT 的密钥
+  expirationTime: 24h            # JWT 的过期时间，可以设置为具体时间，例如：1h, 24h, 7d等
+  issuer: go-chat-app          # JWT 的发行者
+  audience: go-chat-audience    # JWT 的受众，通常是你的应用
+# 接口限流
+rate:
+  userLimit: 10
+  apiLimit: 100
+
+rabbitmq:
+  host: 8.137.38.55
+  port: 5672
+  username: lty
+  password: lty0712
+
+mq:
+  - exchange: chat-exchange
+    queue: chat-storage-queue
+    routingKey: chat-storage
+    handler: HandleChat
+
+#Minio
+minio:
+    endpoint: 8.137.38.55:9000
+    accessKey: minioadmin
+    secretKey: minioadmin
+    bucket: go-chat
+    baseUrl: http://8.137.38.55:9000
